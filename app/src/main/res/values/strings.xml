@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TodoListTest</string>
+    <string name="action_settings">Settings</string>
+    <string name="selected_items_format">%1$d items selected</string>
+</resources>
