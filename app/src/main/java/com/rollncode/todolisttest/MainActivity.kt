@@ -3,13 +3,24 @@ package com.rollncode.todolisttest
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 
+@Suppress("UNCHECKED_CAST")
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: MainViewModel
+    private val factory by lazy {
+        object : ViewModelProvider.Factory {
+            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+                return MainViewModel(this@MainActivity) as T
+            }
+        }
+    }
+    private val viewModel: MainViewModel by lazy { ViewModelProviders.of(this, factory)[MainViewModel::class.java] }
     private val controller = ItemsController {
         supportActionBar?.title = getString(R.string.selected_items_format, it.size)
     }
@@ -19,7 +30,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolBar)
         supportActionBar?.title = getString(R.string.selected_items_format, 0)
-        viewModel = MainViewModel(this)
         viewModel.itemsData.observe(this, Observer {
             controller.setData(it)
         })
